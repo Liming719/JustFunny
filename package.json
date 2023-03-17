@@ -1,0 +1,23 @@
+{
+  "name": "justfunny",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "css": "npx tailwindcss -i ./src/input.css -o ./wwwroot/css/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liming719/JustFunny.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Liming719/JustFunny/issues"
+  },
+  "homepage": "https://github.com/Liming719/JustFunny#readme",
+  "dependencies": {
+    "tailwindcss": "^3.2.7"
+  }
+}
