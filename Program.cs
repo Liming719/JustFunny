@@ -1,8 +1,15 @@
+using JustFunny.Database;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<Fun_DbContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Singleton);
+builder.Services.AddSingleton<DbContext>(x => x.GetRequiredService<Fun_DbContext>());
+builder.Services.AddSingleton(x => x.GetRequiredService<Fun_DbContext>().Users);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
