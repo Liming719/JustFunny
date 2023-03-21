@@ -11,7 +11,7 @@ namespace JustFunny.Database
 
         public override async Task<IEnumerable<User>> GetAsync(string action, Dictionary<string, string> requestList)
         {
-            IEnumerable<User> userList = null;
+            IEnumerable<User> userList = new List<User>();
 
             await Task.Run(() =>
             {
@@ -19,8 +19,8 @@ namespace JustFunny.Database
                 {
                     case "GetByName":
                         string userName = string.Empty;
-                        requestList.TryGetValue("name", out userName);
-                        userList = GetUserByName(userName);
+                        if (requestList.TryGetValue("name", out userName))
+                            userList = GetUserByName(userName);                        
                         break;
                 }
             });

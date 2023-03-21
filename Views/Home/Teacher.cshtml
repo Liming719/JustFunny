@@ -1,3 +1,53 @@
 ﻿@{
     ViewData["Title"] = "Teacher";
 }
+<div>
+    <div class="py-2 mb-4">
+        <h1 class="text-4xl font-semibold">Upload Questions</h1>
+    </div>
+
+    <div>
+        <form method="post" action="ImportQuestions" enctype="multipart/form-data">
+            <div class="form-group mb-2">
+                <label for="file">Choose a Excel File</label>
+                <input type="file" name="file" id="file" class="" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+            </div>
+
+            <button type="submit" class="px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded-md">Import</button>
+        </form>
+    </div>
+    
+    
+    
+    @if (Model != null && Model is IEnumerable<Question>)
+    {
+        <table class="w-full my-4">
+        <thead class="bg-gray-500 text-white h-fit">
+            <tr>
+                <th>Question type</th>
+                <th>Question</th>
+                <th>Option A</th>
+                <th>Option B</th>
+                <th>Option C</th>
+                <th>Option D</th>
+                <th>Answer</th>
+            </tr>
+        </thead>
+        <tbody class="">
+            @foreach(var question in Model)
+            {
+                <tr class="text-center border">
+                    <td>@question.Type</td>                    
+                    <td>@question.Content</td>
+                    <td>@question.OptionA</td>
+                    <td>@question.OptionB</td>
+                    <td>@question.OptionC</td>
+                    <td>@question.OptionD</td>
+                    <td>@question.Answer</td>
+                </tr>
+            }            
+        </tbody>
+        </table>
+    }
+    
+</div>
