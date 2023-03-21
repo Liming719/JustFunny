@@ -1,4 +1,5 @@
-﻿using JustFunny.Models;
+﻿using JustFunny.Database;
+using JustFunny.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -9,18 +10,17 @@ namespace JustFunny.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private DbSet<Users> Users { get; set; }
-        private DbContext DbContext { get; set; }
+        IDataService<User> userService;
 
-        public HomeController(ILogger<HomeController> logger, DbSet<Users> users, DbContext dbContext)
+        public HomeController(ILogger<HomeController> logger, IDataService<User> userService)
         {
             _logger = logger;
-            Users = users;
-            DbContext = dbContext;
+            this.userService = userService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index()            
         {
+            ViewBag.Message = TempData["Message"];
             return View();
         }
 
@@ -34,9 +34,23 @@ namespace JustFunny.Controllers
             return View();
         }
 
-        public IActionResult Login(string username, string password)
+        public async Task<IActionResult> Login(string username, string password)
         {
-            Users user = this.Users.Where(x => x.Name.Equals(username)).First();
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+            keyValuePairs.Add("name", username);
+            User? user = (await userService.GetAsync("GetByName", keyValuePairs)).DefaultIfEmpty(null).First();
+
+            if (user == null)
+            {
+                TempData["Message"] = "User Not Found";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (user.Password != password)
+            {
+                TempData["Message"] = "Incorrect Password";
+                return RedirectToAction("Index", "Home");
+            }                       
 
             if (user.Role == UserRole.Teacher)
             {
@@ -46,6 +60,11 @@ namespace JustFunny.Controllers
             {
                 return RedirectToAction("Student", "Home");
             }
+            else if(user.Role == UserRole.Admin)
+            {
+                return RedirectToAction("Manage", "Account");
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
