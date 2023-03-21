@@ -22,8 +22,10 @@ namespace JustFunny
             services.AddDbContext<Fun_DbContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Singleton);
             services.AddSingleton<DbContext>(x => x.GetRequiredService<Fun_DbContext>());
             services.AddSingleton(x => x.GetRequiredService<Fun_DbContext>().Users);
+            services.AddSingleton(x => x.GetRequiredService<Fun_DbContext>().Questions);
 
             services.AddSingleton<IDataService<User>>(x => new UserService(x.GetRequiredService<Fun_DbContext>(), x.GetRequiredService<Fun_DbContext>().Users));
+            services.AddSingleton<IDataService<Question>>(x => new QuestionService(x.GetRequiredService<Fun_DbContext>(), x.GetRequiredService<Fun_DbContext>().Questions));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

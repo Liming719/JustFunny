@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using JustFunny.Database;
 using JustFunny.Models;
+using JustFunny.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -12,11 +13,13 @@ namespace JustFunny.Controllers
         private readonly ILogger<HomeController> _logger;
 
         IDataService<User> userService;
+        IDataService<Question> questionService;
 
-        public HomeController(ILogger<HomeController> logger, IDataService<User> userService)
+        public HomeController(ILogger<HomeController> logger, IDataService<User> userService, IDataService<Question> questionService)
         {
             _logger = logger;
             this.userService = userService;
+            this.questionService = questionService;
         }
 
         public IActionResult Index()
@@ -33,6 +36,11 @@ namespace JustFunny.Controllers
         public IActionResult Student()
         {
             return View();
+        }
+        public async Task<IActionResult> Quiz()
+        {
+            IEnumerable<Question> questions = await questionService.GetAsync("GetAll", null);
+            return View(questions);
         }
 
         public async Task<IActionResult> Login(string username, string password)
@@ -70,7 +78,7 @@ namespace JustFunny.Controllers
         }
 
         [HttpPost]
-        public IActionResult ImportQuestions(IFormFile file)
+        public async Task<IActionResult> ImportQuestions(IFormFile file)
         {
             // Open the Excel file using ClosedXML
             var workbook = new XLWorkbook(file.OpenReadStream());
@@ -90,7 +98,10 @@ namespace JustFunny.Controllers
                 OptionD = row.Cell(6).Value.ToString(),
                 Answer = row.Cell(7).Value.ToString()
             });
-
+            foreach(Question question in questions)
+            {
+                await questionService.Insert(question);
+            } 
             // Pass the list of questions to the view
             return View("Teacher", questions);
 
