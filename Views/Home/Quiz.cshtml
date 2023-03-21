@@ -1,9 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Quiz";
 }
+@section Scripts{
+    <script src="~/js/quiz.js"></script>
+}
 <div class="py-5 min-h-[600px]">
 
-    @if (Model != null && Model is IEnumerable<Question>)
+    @if (Model != null && Model is IEnumerable<Question> && Model.Count > 0)
     {
         <div>
         @{            
@@ -12,7 +15,7 @@
             {
                 <div class="mb-4 max-w-[300px]">
                     <div class="text-xl font-semibold mb-2">@index. @question.Content</div>
-                    <ul class="child:py-2 child-focus:bg-blue-400 child-hover:bg-blue-200 child-hover:cursor-pointer child:rounded-md">
+                    <ul class="child:py-2 child-hover:bg-green-200 child-hover:cursor-pointer child:rounded-md options">
                         <li>(A) @question.OptionA</li>
                         <li>(B) @question.OptionB</li>
                         <li>(C) @question.OptionC</li>
@@ -23,9 +26,6 @@
             }
         }
         </div>
-        
-        <button type="submit">Done</button>
-
     }
     else
     {
